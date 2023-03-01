@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    android:layout_marginTop="10dp"
     android:background="@drawable/rounded_square"
     android:clickable="true"
     android:focusable="true"
@@ -16,21 +17,23 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="z"
         android:textSize="18sp" />
 
     <ImageButton
         android:id="@+id/actionTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|center_vertical"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_weight="0"
+        android:background="@drawable/rounded_square"
         android:backgroundTint="#00FFFFFF"
-        android:clickable="true"
-        android:maxWidth="40dp"
-        android:minWidth="40dp"
-        android:minHeight="40dp"
+        android:contentDescription="@string/maintaskbutton"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:minWidth="60dp"
+        android:minHeight="60dp"
         app:srcCompat="@drawable/done" />
 
 </LinearLayout>
