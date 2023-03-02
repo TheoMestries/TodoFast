@@ -31,18 +31,23 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
         View.OnClickListener {
         var titleTextView: TextView = itemView.findViewById(R.id.titleTask)
 
-        init {
+        fun setDoneListener() {
             itemView.findViewById<ImageButton>(R.id.actionTask).setOnClickListener(this)
         }
 
+        /**
+         * Will be called when the image button of the item is clicked
+         */
         override fun onClick(view: View?) {
             // Get the position of the item that was clicked
             val position: Int = adapterPosition
             // Do something with the clicked item
             Log.d("com.tm.todofast.TaskAdapter", "Item clicked at position $position")
 
-            val mainActivity = view?.context as MainActivity
+            val mainActivity = view!!.context as MainActivity
             mainActivity.setItemDone(position)
+
+            //todo: delete the done button when the item is done
         }
     }
 
@@ -61,8 +66,13 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
         if (holder is TitleViewHolder) {
             holder.titleTextView.text = if (position == 0) "Not Done" else "Done"
         } else if (holder is TaskViewHolder) {
-            val item =
-                if (position < notDone.size + 1) notDone[position - 1] else done[position - notDone.size - 2]
+            val item: Task
+            if (position < notDone.size + 1) {
+                item = notDone[position - 1]
+                holder.setDoneListener()
+            } else {
+                item = done[position - notDone.size - 2]
+            }
             holder.titleTextView.text = item.title
         }
     }

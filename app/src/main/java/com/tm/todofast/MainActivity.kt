@@ -19,19 +19,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        done = arrayListOf(
+        done = arrayListOf()
+
+        notDone = arrayListOf(
+            Task("1"),
+            Task("2"),
+            Task("3"),
             Task("4"),
             Task("5"),
             Task("6"),
             Task("7"),
             Task("8"),
             Task("9"),
-        )
-
-        notDone = arrayListOf(
-            Task("1"),
-            Task("2"),
-            Task("3"),
         )
 
         doneTaskAdapter = TaskAdapter(done, notDone)
@@ -48,7 +47,10 @@ class MainActivity : AppCompatActivity() {
 
                 val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
                 if (viewHolder is TaskAdapter.TitleViewHolder)
-                    return makeMovementFlags(ItemTouchHelper.ACTION_STATE_IDLE, ItemTouchHelper.ACTION_STATE_IDLE)
+                    return makeMovementFlags(
+                        ItemTouchHelper.ACTION_STATE_IDLE,
+                        ItemTouchHelper.ACTION_STATE_IDLE
+                    )
 
                 return makeMovementFlags(ItemTouchHelper.ACTION_STATE_IDLE, swipeFlags)
             }
@@ -71,9 +73,9 @@ class MainActivity : AppCompatActivity() {
                 // Remove the item from your data set and notify the adapter
 
                 println(position)
-                if(position > notDone.size + 1) {
-                    done.removeAt(position - notDone.size - 2 )
-                }else{
+                if (position > notDone.size + 1) {
+                    done.removeAt(position - notDone.size - 2)
+                } else {
                     notDone.removeAt(position - 1)
                 }
 
@@ -86,8 +88,15 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Setting a task to done and moving it to the top of the done list
+     * @param index the index of the task in the total list (not done + done + titles)
+     **/
     fun setItemDone(index: Int) {
-        //todo
+        val task = notDone[index - 1]
+        notDone.removeAt(index - 1)
+        done.add(0, task)
+        doneTaskAdapter.notifyItemMoved(index, notDone.size + 2)
     }
 
 }
