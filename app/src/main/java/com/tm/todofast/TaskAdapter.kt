@@ -29,8 +29,7 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
     }
 
     inner class TaskViewHolder(itemView: View, private var isDone: Boolean) :
-        RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
+        RecyclerView.ViewHolder(itemView) {
 
         val titleTextView: TextView
             get() {
@@ -43,8 +42,21 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
             }
 
         init {
-            itemView.findViewById<ImageButton>(R.id.actionTask).setOnClickListener(this)
+            itemView.findViewById<ImageButton>(R.id.actionTask).setOnClickListener { onActionButtonClicked(it) }
+            itemView.findViewById<ImageButton>(R.id.deleteButton).setOnClickListener { onDeleteButtonClicked() }
             itemView.tag = isDone
+        }
+
+        private fun onDeleteButtonClicked() {
+            // Get the position of the item that was clicked
+            val position: Int = adapterPosition
+
+            if (position < notDone.size + 1)
+                notDone.removeAt(position - 1)
+            else
+                done.removeAt(position - notDone.size - 2)
+            
+            this@TaskAdapter.notifyItemRemoved(position)
         }
 
         fun updateImageButton() {
@@ -52,14 +64,12 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
                 actionButton.setImageResource(R.drawable.undo)
             else
                 actionButton.setImageResource(R.drawable.done)
-
-
         }
 
         /**
          * Will be called when the image button of the item is clicked
          */
-        override fun onClick(view: View?) {
+        private fun onActionButtonClicked(view: View?) {
             // Get the position of the item that was clicked
             val position: Int = adapterPosition
             // Do something with the clicked item

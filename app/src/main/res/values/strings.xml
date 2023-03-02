@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">TodoFast</string>
-    <string name="maintaskbutton">mainTaskButton</string>
+    <string name="mainTaskButton">mainTaskButton</string>
+    <string name="deleteButton">deleteButton</string>
 </resources>

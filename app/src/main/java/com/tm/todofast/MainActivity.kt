@@ -83,43 +83,45 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    /**
-     * Setting a task to done and moving it to the top of the done list
-     * @param index the index of the task in the total list (not done + done + titles)
-     **/
-    fun setItemDone(index: Int) {
-        val task = notDone[index - 1]
-        notDone.removeAt(index - 1)
-        done.add(0, task)
 
-        taskAdapter.notifyItemMoved(index, notDone.size + 2)
+/**
+ * Setting a task to done and moving it to the top of the done list
+ * @param index the index of the task in the total list (not done + done + titles)
+ **/
+fun setItemDone(index: Int) {
+    val task = notDone[index - 1]
+    notDone.removeAt(index - 1)
+    done.add(0, task)
 
-    }
+    taskAdapter.notifyItemMoved(index, notDone.size + 2)
 
-    fun setItemUnDone(position: Int) {
-        val doneIndex = fromTotalListToDoneIndex(position)
 
-        val task = done[doneIndex]
-        val newIndex = getIndexOfNewNotDoneTask(task)
+}
 
-        done.removeAt(doneIndex)
-        notDone.add(newIndex, task)
+fun setItemUnDone(position: Int) {
+    val doneIndex = fromTotalListToDoneIndex(position)
 
-        taskAdapter.notifyItemMoved(position, newIndex + 1)
+    val task = done[doneIndex]
+    val newIndex = getIndexOfNewNotDoneTask(task)
 
-    }
+    done.removeAt(doneIndex)
+    notDone.add(newIndex, task)
 
-    /**
-     * Returns the index of the new not done task. Compare the overdue date of the task with the overdue dates of the other tasks
-     * @param task the task to be added
-     * @return the index the task should be added to
-     **/
-    private fun getIndexOfNewNotDoneTask(task: Task): Int {
-        return 0
-        //TODO("Not yet implemented")
-    }
+    taskAdapter.notifyItemMoved(position, newIndex + 1)
 
-    private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
+}
+
+/**
+ * Returns the index of the new not done task. Compare the overdue date of the task with the overdue dates of the other tasks
+ * @param task the task to be added
+ * @return the index the task should be added to
+ **/
+private fun getIndexOfNewNotDoneTask(task: Task): Int {
+    return 0
+    //TODO("Not yet implemented")
+}
+
+private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
 
 
 }
