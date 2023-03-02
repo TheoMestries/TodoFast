@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
-    var doneTaskAdapter: TaskAdapter = TaskAdapter(arrayListOf(), arrayListOf())
+    var taskAdapter: TaskAdapter = TaskAdapter(arrayListOf(), arrayListOf())
 
-    private var doneList: RecyclerView? = null
+    private var recyclerView: RecyclerView? = null
 
     var done = arrayListOf<Task>()
     var notDone = arrayListOf<Task>()
@@ -19,24 +19,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        done = arrayListOf()
+        done = arrayListOf(
+            Task("4"),
+        )
 
         notDone = arrayListOf(
             Task("1"),
             Task("2"),
             Task("3"),
-            Task("4"),
-            Task("5"),
-            Task("6"),
-            Task("7"),
-            Task("8"),
-            Task("9"),
+            Task("5")
         )
 
-        doneTaskAdapter = TaskAdapter(done, notDone)
-        doneList = findViewById(R.id.doneList)
-        doneList!!.adapter = doneTaskAdapter
-        doneList!!.layoutManager = LinearLayoutManager(this)
+        taskAdapter = TaskAdapter(done, notDone)
+        recyclerView = findViewById(R.id.taskList)
+        recyclerView!!.adapter = taskAdapter
+        recyclerView!!.layoutManager = LinearLayoutManager(this)
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
             override fun getMovementFlags(
@@ -60,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                return false
+                return true
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -74,17 +71,15 @@ class MainActivity : AppCompatActivity() {
 
                 println(position)
                 if (position > notDone.size + 1) {
-                    done.removeAt(position - notDone.size - 2)
+                    done.removeAt(fromTotalListToDoneIndex(position))
                 } else {
                     notDone.removeAt(position - 1)
                 }
 
-                doneTaskAdapter.notifyItemRemoved(position)
-
-                println("REMOVED")
+                taskAdapter.notifyItemRemoved(position)
             }
         })
-        itemTouchHelper.attachToRecyclerView(doneList)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
 
     }
 
@@ -96,7 +91,35 @@ class MainActivity : AppCompatActivity() {
         val task = notDone[index - 1]
         notDone.removeAt(index - 1)
         done.add(0, task)
-        doneTaskAdapter.notifyItemMoved(index, notDone.size + 2)
+
+        taskAdapter.notifyItemMoved(index, notDone.size + 2)
+
     }
+
+    fun setItemUnDone(position: Int) {
+        val doneIndex = fromTotalListToDoneIndex(position)
+
+        val task = done[doneIndex]
+        val newIndex = getIndexOfNewNotDoneTask(task)
+
+        done.removeAt(doneIndex)
+        notDone.add(newIndex, task)
+
+        taskAdapter.notifyItemMoved(position, newIndex + 1)
+
+    }
+
+    /**
+     * Returns the index of the new not done task. Compare the overdue date of the task with the overdue dates of the other tasks
+     * @param task the task to be added
+     * @return the index the task should be added to
+     **/
+    private fun getIndexOfNewNotDoneTask(task: Task): Int {
+        return 0
+        //TODO("Not yet implemented")
+    }
+
+    private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
+
 
 }

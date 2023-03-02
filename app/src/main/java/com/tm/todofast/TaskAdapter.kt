@@ -13,26 +13,47 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val viewTypeTitle = 0
-    private val viewTypeTask = 1
+    private val viewTypeNotDoneTask = 1
+    private val viewTypeDoneTask = 2
 
     override fun getItemViewType(position: Int): Int {
         // what type of view
         return if (position == 0 || position == notDone.size + 1)
             viewTypeTitle
         else
-            viewTypeTask
+            if (position < notDone.size + 1) viewTypeNotDoneTask else viewTypeDoneTask
     }
 
     inner class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titleTextView: TextView = itemView.findViewById(R.id.titleTask)
     }
 
-    inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class TaskViewHolder(itemView: View, private var isDone: Boolean) :
+        RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var titleTextView: TextView = itemView.findViewById(R.id.titleTask)
 
-        fun setDoneListener() {
+        val titleTextView: TextView
+            get() {
+                return itemView.findViewById(R.id.titleTask)
+            }
+
+        private val actionButton: ImageButton
+            get() {
+                return itemView.findViewById(R.id.actionTask)
+            }
+
+        init {
             itemView.findViewById<ImageButton>(R.id.actionTask).setOnClickListener(this)
+            itemView.tag = isDone
+        }
+
+        fun updateImageButton() {
+            if (itemView.tag!! as Boolean)
+                actionButton.setImageResource(R.drawable.undo)
+            else
+                actionButton.setImageResource(R.drawable.done)
+
+
         }
 
         /**
@@ -45,9 +66,14 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
             Log.d("com.tm.todofast.TaskAdapter", "Item clicked at position $position")
 
             val mainActivity = view!!.context as MainActivity
-            mainActivity.setItemDone(position)
 
-            //todo: delete the done button when the item is done
+            //keep the state of the item
+            itemView.tag = isDone
+            if (isDone) {
+                mainActivity.setItemUnDone(position)
+            } else {
+                mainActivity.setItemDone(position)
+            }
         }
     }
 
@@ -58,7 +84,7 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
             TitleViewHolder(view)
         } else {
             val view: View = inflater.inflate(R.layout.task, parent, false)
-            TaskViewHolder(view)
+            TaskViewHolder(view, viewType == viewTypeDoneTask)
         }
     }
 
@@ -66,14 +92,12 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
         if (holder is TitleViewHolder) {
             holder.titleTextView.text = if (position == 0) "Not Done" else "Done"
         } else if (holder is TaskViewHolder) {
-            val item: Task
-            if (position < notDone.size + 1) {
-                item = notDone[position - 1]
-                holder.setDoneListener()
-            } else {
-                item = done[position - notDone.size - 2]
-            }
+            val item: Task =
+                if (position < notDone.size + 1)
+                    notDone[position - 1] else done[position - notDone.size - 2]
+
             holder.titleTextView.text = item.title
+            holder.updateImageButton()
         }
     }
 
