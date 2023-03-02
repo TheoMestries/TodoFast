@@ -1,36 +1,43 @@
 package com.example.todofast
 
-import TaskAdapter
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    var taskAdapter: TaskAdapter = TaskAdapter(arrayListOf(), this)
-    private var listView: RecyclerView? = null
-    var values = arrayListOf<Task>()
+    var doneTaskAdapter: TaskAdapter = TaskAdapter(arrayListOf(), arrayListOf())
+
+    private var doneList: RecyclerView? = null
+
+    var done = arrayListOf<Task>()
+    var notDone = arrayListOf<Task>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-         values = arrayListOf(
-            Task("tafast"),
-            Task("tonperefast"),
-            Task("todofast"),
-            Task("susfast"),
-            Task("afast"),
-            Task("unimolixfast"),
-            Task("the fast"),
-            Task("not so fast"),
+        done = arrayListOf(
+            Task("4"),
+            Task("1"),
+            Task("6"),
+            Task("7"),
+            Task("8"),
+            Task("9"),
         )
-        taskAdapter = TaskAdapter(values, this)
-        listView = findViewById(R.id.list)
-        listView!!.adapter = taskAdapter
-        listView!!.layoutManager = LinearLayoutManager(this)
+
+        notDone = arrayListOf(
+            Task("1"),
+            Task("2"),
+            Task("3"),
+        )
+
+        doneTaskAdapter = TaskAdapter(done, notDone)
+        doneList = findViewById(R.id.doneList)
+        doneList!!.adapter = doneTaskAdapter
+        doneList!!.layoutManager = LinearLayoutManager(this)
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
             override fun getMovementFlags(
@@ -38,7 +45,11 @@ class MainActivity : AppCompatActivity() {
                 viewHolder: RecyclerView.ViewHolder
             ): Int {
                 // set movement left and right forbidden
+
                 val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+                if (viewHolder is TaskAdapter.TitleViewHolder)
+                    return makeMovementFlags(ItemTouchHelper.ACTION_STATE_IDLE, ItemTouchHelper.ACTION_STATE_IDLE)
+
                 return makeMovementFlags(ItemTouchHelper.ACTION_STATE_IDLE, swipeFlags)
             }
 
@@ -47,34 +58,36 @@ class MainActivity : AppCompatActivity() {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                // Called when an item is dragged and dropped to a new position
-                val fromPosition = viewHolder.adapterPosition
-                val toPosition = target.adapterPosition
-                // Update your data set with the new item order
-                Collections.swap(values, fromPosition, toPosition)
-                taskAdapter.notifyItemMoved(fromPosition, toPosition)
-
-                println("MOVED")
-                return true
+                return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
                 // Called when an item is swiped to the left or right
                 val position = viewHolder.adapterPosition
+
+                if (viewHolder is TaskAdapter.TitleViewHolder)
+                    return
                 // Remove the item from your data set and notify the adapter
-                values.removeAt(position)
-                taskAdapter.notifyItemRemoved(position)
+
+                println(position)
+                if(position > notDone.size + 1) {
+                    done.removeAt(position - notDone.size - 2 )
+                }else{
+                    notDone.removeAt(position - 1)
+                }
+
+                doneTaskAdapter.notifyItemRemoved(position)
 
                 println("REMOVED")
             }
         })
-        itemTouchHelper.attachToRecyclerView(listView)
+        itemTouchHelper.attachToRecyclerView(doneList)
 
     }
 
-    fun setItemToFirst(index: Int) {
-        Collections.swap(values, index, 0)
-        taskAdapter.notifyItemMoved(index, 0)
+    fun setItemDone(index: Int) {
+        //todo
     }
 
 }
