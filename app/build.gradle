@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.todofast'
+    namespace 'com.tm.todofast'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.todofast"
+        applicationId "com.tm.todofast"
         minSdk 24
         targetSdk 33
         versionCode 1

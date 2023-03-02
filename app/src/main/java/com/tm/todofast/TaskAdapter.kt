@@ -1,4 +1,4 @@
-package com.example.todofast
+package com.tm.todofast
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -39,7 +39,7 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
             // Get the position of the item that was clicked
             val position: Int = adapterPosition
             // Do something with the clicked item
-            Log.d("com.example.todofast.TaskAdapter", "Item clicked at position $position")
+            Log.d("com.tm.todofast.TaskAdapter", "Item clicked at position $position")
 
             val mainActivity = view?.context as MainActivity
             mainActivity.setItemDone(position)

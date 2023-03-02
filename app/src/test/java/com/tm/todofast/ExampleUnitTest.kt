@@ -1,4 +1,4 @@
-package com.example.todofast
+package com.tm.todofast
 
 import org.junit.Test
 

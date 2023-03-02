@@ -1,4 +1,4 @@
-package com.example.todofast
+package com.tm.todofast
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         done = arrayListOf(
             Task("4"),
-            Task("1"),
+            Task("5"),
             Task("6"),
             Task("7"),
             Task("8"),
