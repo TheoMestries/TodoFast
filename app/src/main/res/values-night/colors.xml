@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="item_background">#2D2D2E</color>
+    <color name="background">@android:color/background_dark</color>
 </resources>

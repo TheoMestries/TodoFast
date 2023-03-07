@@ -15,15 +15,6 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
     private val viewTypeTitle = 0
     private val viewTypeNotDoneTask = 1
     private val viewTypeDoneTask = 2
-
-    override fun getItemViewType(position: Int): Int {
-        // what type of view
-        return if (position == 0 || position == notDone.size + 1)
-            viewTypeTitle
-        else
-            if (position < notDone.size + 1) viewTypeNotDoneTask else viewTypeDoneTask
-    }
-
     inner class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titleTextView: TextView = itemView.findViewById(R.id.titleTask)
     }
@@ -55,8 +46,8 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
                 notDone.removeAt(position - 1)
             else
                 done.removeAt(position - notDone.size - 2)
-            
-            this@TaskAdapter.notifyItemRemoved(position)
+
+            notifyItemRemoved(position)
         }
 
         fun updateImageButton() {
@@ -87,6 +78,16 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
         }
     }
 
+
+    override fun getItemViewType(position: Int): Int {
+        // what type of view
+        return if (position == 0 || position == notDone.size + 1)
+            viewTypeTitle
+        else
+            if (position < notDone.size + 1) viewTypeNotDoneTask else viewTypeDoneTask
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == viewTypeTitle) {
@@ -106,6 +107,8 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
                 if (position < notDone.size + 1)
                     notDone[position - 1] else done[position - notDone.size - 2]
 
+            println("onBindViewHolder: $position")
+
             holder.titleTextView.text = item.title
             holder.updateImageButton()
         }
@@ -113,6 +116,7 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
 
 
     override fun getItemCount(): Int {
+        println("getItemCount: ${done.size + notDone.size + 2}")
         return done.size + notDone.size + 2
     }
 

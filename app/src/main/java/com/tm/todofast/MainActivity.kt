@@ -1,10 +1,16 @@
 package com.tm.todofast
 
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,20 +26,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         done = arrayListOf(
-            Task("4"),
         )
 
         notDone = arrayListOf(
-            Task("1"),
-            Task("2"),
-            Task("3"),
-            Task("5")
         )
 
         taskAdapter = TaskAdapter(done, notDone)
         recyclerView = findViewById(R.id.taskList)
         recyclerView!!.adapter = taskAdapter
         recyclerView!!.layoutManager = LinearLayoutManager(this)
+
+        val addText = findViewById<TextView>(R.id.textTaskName)
+
+        addText.addTextChangedListener {
+            val taskName = addText.text.toString()
+
+            findViewById<FloatingActionButton>(R.id.btnAddTask).isEnabled = taskName.isNotEmpty()
+
+        }
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
             override fun getMovementFlags(
@@ -80,48 +90,65 @@ class MainActivity : AppCompatActivity() {
             }
         })
         itemTouchHelper.attachToRecyclerView(recyclerView)
-
     }
 
 
-/**
- * Setting a task to done and moving it to the top of the done list
- * @param index the index of the task in the total list (not done + done + titles)
- **/
-fun setItemDone(index: Int) {
-    val task = notDone[index - 1]
-    notDone.removeAt(index - 1)
-    done.add(0, task)
+    /**
+     * Setting a task to done and moving it to the top of the done list
+     * @param index the index of the task in the total list (not done + done + titles)
+     **/
+    fun setItemDone(index: Int) {
+        val task = notDone[index - 1]
+        notDone.removeAt(index - 1)
+        done.add(0, task)
 
-    taskAdapter.notifyItemMoved(index, notDone.size + 2)
+        taskAdapter.notifyItemMoved(index, notDone.size + 2)
+    }
 
+    fun setItemUnDone(position: Int) {
+        val doneIndex = fromTotalListToDoneIndex(position)
 
-}
+        val task = done[doneIndex]
+        val newIndex = getIndexOfNewNotDoneTask(task)
 
-fun setItemUnDone(position: Int) {
-    val doneIndex = fromTotalListToDoneIndex(position)
+        done.removeAt(doneIndex)
+        notDone.add(newIndex, task)
 
-    val task = done[doneIndex]
-    val newIndex = getIndexOfNewNotDoneTask(task)
+        taskAdapter.notifyItemMoved(position, newIndex + 1)
 
-    done.removeAt(doneIndex)
-    notDone.add(newIndex, task)
+    }
 
-    taskAdapter.notifyItemMoved(position, newIndex + 1)
+    /**
+     * Returns the index of the new not done task. Compare the overdue date of the task with the overdue dates of the other tasks
+     * @param task the task to be added
+     * @return the index the task should be added to
+     **/
+    private fun getIndexOfNewNotDoneTask(task: Task): Int {
+        return 0
+        //TODO("Not yet implemented")
+    }
 
-}
+    private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
 
-/**
- * Returns the index of the new not done task. Compare the overdue date of the task with the overdue dates of the other tasks
- * @param task the task to be added
- * @return the index the task should be added to
- **/
-private fun getIndexOfNewNotDoneTask(task: Task): Int {
-    return 0
-    //TODO("Not yet implemented")
-}
+    fun onBtnAddClick(view: View) {
+        var text = findViewById<TextView>(R.id.textTaskName).text.toString()
 
-private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
+        val task = Task(text)
+        val newIndex = getIndexOfNewNotDoneTask(task)
+        notDone.add(newIndex, task)
+        taskAdapter.notifyItemInserted(notDone.size)
+    }
 
+    fun onBtnChooseDateClick(view: View) {
+        val builder = MaterialDatePicker.Builder.datePicker().setTitleText("Select deadline")
+        val picker = builder.build()
+
+        picker.addOnPositiveButtonClickListener {
+            (view as TextView).text = picker.headerText
+        }
+
+        picker.show(supportFragmentManager, picker.toString())
+
+    }
 
 }

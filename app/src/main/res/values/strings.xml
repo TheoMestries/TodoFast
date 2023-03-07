@@ -2,4 +2,7 @@
     <string name="app_name">TodoFast</string>
     <string name="mainTaskButton">mainTaskButton</string>
     <string name="deleteButton">deleteButton</string>
+    <string name="new_task">new task</string>
+    <string name="add">add</string>
+    <string name="clock">clock</string>
 </resources>
