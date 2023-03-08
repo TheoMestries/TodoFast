@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
     var done = arrayListOf<Task>()
     var notDone = arrayListOf<Task>()
+
+    var selectedDate: Date? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,12 +135,20 @@ class MainActivity : AppCompatActivity() {
     private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
 
     fun onBtnAddClick(view: View) {
-        var text = findViewById<TextView>(R.id.textTaskName).text.toString()
+        val text = findViewById<TextView>(R.id.textTaskName).text.toString()
 
-        val task = Task(text)
+        val task = Task(text, selectedDate)
         val newIndex = getIndexOfNewNotDoneTask(task)
         notDone.add(newIndex, task)
         taskAdapter.notifyItemInserted(notDone.size)
+
+        resetAddTask()
+    }
+
+    private fun resetAddTask() {
+        findViewById<TextView>(R.id.textTaskName).text = ""
+        findViewById<TextView>(R.id.editTextDate).text = getString(R.string.base_date_text)
+        selectedDate = null
     }
 
     fun onBtnChooseDateClick(view: View) {
@@ -144,7 +156,20 @@ class MainActivity : AppCompatActivity() {
         val picker = builder.build()
 
         picker.addOnPositiveButtonClickListener {
-            (view as TextView).text = picker.headerText
+            //save date
+            picker.selection
+
+            val timeZoneUTC: TimeZone = TimeZone.getDefault()
+
+            // It will be negative, so that's the -1
+            val offsetFromUTC: Int = timeZoneUTC.getOffset(Date().time) * -1
+
+            // Create a date format, then a date object with our offset
+            val simpleFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+            selectedDate = Date(it + offsetFromUTC)
+
+
+            (view as TextView).text = simpleFormat.format(selectedDate!!)
         }
 
         picker.show(supportFragmentManager, picker.toString())

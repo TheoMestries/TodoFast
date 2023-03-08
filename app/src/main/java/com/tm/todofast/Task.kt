@@ -1,4 +1,6 @@
 package com.tm.todofast
 
-class Task(var title: String) {
+import java.util.*
+
+class Task(var title: String, selectedDate: Date?) {
 }

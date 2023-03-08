@@ -5,4 +5,5 @@
     <string name="new_task">new task</string>
     <string name="add">add</string>
     <string name="clock">clock</string>
+    <string name="base_date_text">Choose date</string>
 </resources>
