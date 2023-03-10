@@ -25,9 +25,12 @@ class MainActivity : AppCompatActivity() {
 
     var selectedDate: Date? = null
 
+    val dbHelper = DatabaseHelper(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         done = arrayListOf(
         )
@@ -135,13 +138,14 @@ class MainActivity : AppCompatActivity() {
     private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
 
     fun onBtnAddClick(view: View) {
-        val text = findViewById<TextView>(R.id.textTaskName).text.toString()
 
-        val task = Task(text, selectedDate)
+        val text = findViewById<TextView>(R.id.textTaskName).text.toString()
+        val task = dbHelper.addItemDataBase(text, selectedDate)
         val newIndex = getIndexOfNewNotDoneTask(task)
 
         notDone.add(newIndex, task)
         taskAdapter.notifyItemInserted(newIndex + 1)
+
 
         resetAddTask()
     }

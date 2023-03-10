@@ -2,5 +2,5 @@ package com.tm.todofast
 
 import java.util.*
 
-class Task(var title: String,var selectedDate: Date?) {
+class Task(val id : Long ,var title: String,var createdAt: Date , var selectedDate: Date?) {
 }
