@@ -122,9 +122,10 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
             holder.titleTextView.text = item.title
 
             //set the date only if there is one
-            item.selectedDate?.let {
-                holder.dateTextView.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(it)
-            }
+            if(item.selectedDate != null)
+                holder.dateTextView.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(item.selectedDate!!)
+            else
+                holder.dateTextView.text = ""
 
 
             holder.updateImageButton()

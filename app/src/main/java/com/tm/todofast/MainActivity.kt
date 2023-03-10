@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     var done = arrayListOf<Task>()
     var notDone = arrayListOf<Task>()
 
-    var selectedDate: Date? = null
+    private var selectedDate: Date? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,8 +128,16 @@ class MainActivity : AppCompatActivity() {
      * @return the index the task should be added to
      **/
     private fun getIndexOfNewNotDoneTask(task: Task): Int {
-        return 0
-        //TODO("Not yet implemented")
+        if (task.selectedDate != null) //
+            for ((index, item) in notDone.withIndex()) {
+                if (item.selectedDate != null) {
+                    if (item.selectedDate!!.after(task.selectedDate!!)) {
+                        return index
+                    }
+                }
+
+            }
+        return notDone.size
     }
 
     private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
