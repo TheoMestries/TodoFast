@@ -139,8 +139,9 @@ class MainActivity : AppCompatActivity() {
 
         val task = Task(text, selectedDate)
         val newIndex = getIndexOfNewNotDoneTask(task)
+
         notDone.add(newIndex, task)
-        taskAdapter.notifyItemInserted(notDone.size)
+        taskAdapter.notifyItemInserted(newIndex + 1)
 
         resetAddTask()
     }

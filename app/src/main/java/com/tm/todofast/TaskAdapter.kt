@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayList<Task>) :
@@ -15,6 +17,7 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
     private val viewTypeTitle = 0
     private val viewTypeNotDoneTask = 1
     private val viewTypeDoneTask = 2
+
     inner class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titleTextView: TextView = itemView.findViewById(R.id.titleTask)
     }
@@ -27,14 +30,21 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
                 return itemView.findViewById(R.id.titleTask)
             }
 
+        val dateTextView: TextView
+            get() {
+                return itemView.findViewById(R.id.dateTask)
+            }
+
         private val actionButton: ImageButton
             get() {
                 return itemView.findViewById(R.id.actionTask)
             }
 
         init {
-            itemView.findViewById<ImageButton>(R.id.actionTask).setOnClickListener { onActionButtonClicked(it) }
-            itemView.findViewById<ImageButton>(R.id.deleteButton).setOnClickListener { onDeleteButtonClicked() }
+            itemView.findViewById<ImageButton>(R.id.actionTask)
+                .setOnClickListener { onActionButtonClicked(it) }
+            itemView.findViewById<ImageButton>(R.id.deleteButton)
+                .setOnClickListener { onDeleteButtonClicked() }
             itemView.tag = isDone
         }
 
@@ -110,6 +120,13 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
             println("onBindViewHolder: $position")
 
             holder.titleTextView.text = item.title
+
+            //set the date only if there is one
+            item.selectedDate?.let {
+                holder.dateTextView.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(it)
+            }
+
+
             holder.updateImageButton()
         }
     }

@@ -10,28 +10,43 @@
     android:focusable="true"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/titleTask"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="bottom"
         android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="18sp" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:textAlignment="gravity"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/dateTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end" />
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|center_vertical"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_weight="0"
         android:background="@drawable/rounded_square"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="@string/deleteButton"
         android:foreground="?android:attr/selectableItemBackground"
+        android:padding="5dp"
         app:srcCompat="@drawable/delete" />
 
     <ImageButton
@@ -39,14 +54,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|center_vertical"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_weight="0"
         android:background="@drawable/rounded_square"
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="@string/mainTaskButton"
         android:foreground="?android:attr/selectableItemBackground"
+        android:padding="5dp"
         app:srcCompat="@drawable/done" />
 
 </LinearLayout>
