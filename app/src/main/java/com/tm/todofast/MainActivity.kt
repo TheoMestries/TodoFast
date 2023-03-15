@@ -25,9 +25,11 @@ class MainActivity : AppCompatActivity() {
 
     private var selectedDate: Date? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         done = arrayListOf(
         )
@@ -41,6 +43,11 @@ class MainActivity : AppCompatActivity() {
         recyclerView!!.layoutManager = LinearLayoutManager(this)
 
         val addText = findViewById<TextView>(R.id.textTaskName)
+        val dbHelper = DataBaseHelper(this)
+        val allTask = dbHelper.allTask
+        for (task in allTask) {
+          addTask(task)
+        }
 
         addText.addTextChangedListener {
             val taskName = addText.text.toString()
@@ -143,13 +150,19 @@ class MainActivity : AppCompatActivity() {
     private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
 
     fun onBtnAddClick(view: View) {
-        val text = findViewById<TextView>(R.id.textTaskName).text.toString()
 
-        val task = Task(text, selectedDate)
+        val text = findViewById<TextView>(R.id.textTaskName).text.toString()
+        val dbHelper = DataBaseHelper(this)
+        val task = dbHelper.insertTask(text, selectedDate,null)
+        addTask(task)
+    }
+
+    private fun addTask(task: Task) {
         val newIndex = getIndexOfNewNotDoneTask(task)
 
         notDone.add(newIndex, task)
         taskAdapter.notifyItemInserted(newIndex + 1)
+
 
         resetAddTask()
     }
@@ -174,7 +187,7 @@ class MainActivity : AppCompatActivity() {
             val offsetFromUTC: Int = timeZoneUTC.getOffset(Date().time) * -1
 
             // Create a date format, then a date object with our offset
-            val simpleFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+            val simpleFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             selectedDate = Date(it + offsetFromUTC)
 
 
