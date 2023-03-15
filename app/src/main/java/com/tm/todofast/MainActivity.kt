@@ -90,16 +90,20 @@ class MainActivity : AppCompatActivity() {
                     return
                 // Remove the item from your data set and notify the adapter
 
-                if (position > notDone.size + 1) {
-                    done.removeAt(fromTotalListToDoneIndex(position))
-                } else {
-                    notDone.removeAt(position - 1)
-                }
-
-                taskAdapter.notifyItemRemoved(position)
+                removeTask(position)
             }
         })
         itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    fun removeTask(position: Int) {
+        if (position > notDone.size + 1) {
+            done.removeAt(fromTotalListToDoneIndex(position))
+        } else {
+            notDone.removeAt(position - 1)
+        }
+
+        taskAdapter.notifyItemRemoved(position)
     }
 
 

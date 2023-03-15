@@ -52,12 +52,8 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
             // Get the position of the item that was clicked
             val position: Int = adapterPosition
 
-            if (position < notDone.size + 1)
-                notDone.removeAt(position - 1)
-            else
-                done.removeAt(position - notDone.size - 2)
-
-            notifyItemRemoved(position)
+            val mainActivity = itemView.context as MainActivity
+            mainActivity.removeTask(position)
         }
 
         fun updateImageButton() {
