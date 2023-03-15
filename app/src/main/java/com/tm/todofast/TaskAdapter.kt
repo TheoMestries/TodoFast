@@ -117,8 +117,6 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
                 if (position < notDone.size + 1)
                     notDone[position - 1] else done[position - notDone.size - 2]
 
-            println("onBindViewHolder: $position")
-
             holder.titleTextView.text = item.title
 
             //set the date only if there is one
@@ -134,7 +132,6 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
 
 
     override fun getItemCount(): Int {
-        println("getItemCount: ${done.size + notDone.size + 2}")
         return done.size + notDone.size + 2
     }
 
