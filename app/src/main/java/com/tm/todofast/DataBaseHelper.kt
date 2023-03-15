@@ -111,5 +111,19 @@ class DataBaseHelper(context: Context) {
         close()
     }
 
+    fun updateTask(task: Task) {
+        openForWrite()
+        val values = ContentValues()
+        val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val selectedDateFormat = if (task.selectedDate == null) "" else formatDate.format(task.selectedDate)
+        val doneAtFormat = if (task.DoneAt == null) "" else formatDate.format(task.DoneAt)
+        values.put(TaskStructure.COL_DESCRIPTION, task.title)
+        values.put(TaskStructure.COL_CREATED_AT, formatDate.format(task.createdAt))
+        values.put(TaskStructure.COL_TODO, selectedDateFormat)
+        values.put(TaskStructure.COL_DONE_AT, doneAtFormat)
+        bdd!!.update(TaskStructure.TABLE_TASK, values, TaskStructure.COL_ID + " = " + task.id, null)
+        close()
+    }
+
 
 }

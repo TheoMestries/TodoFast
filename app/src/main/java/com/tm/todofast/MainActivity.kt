@@ -111,6 +111,10 @@ class MainActivity : AppCompatActivity() {
         val task = notDone[index - 1]
         notDone.removeAt(index - 1)
         done.add(0, task)
+        task.DoneAt= Calendar.getInstance().time
+        val dbHelper = DataBaseHelper(this)
+        dbHelper.updateTask(task)
+
 
         taskAdapter.notifyItemMoved(index, notDone.size + 2)
     }
@@ -120,6 +124,9 @@ class MainActivity : AppCompatActivity() {
 
         val task = done[doneIndex]
         val newIndex = getIndexOfNewNotDoneTask(task)
+        task.DoneAt = null
+        val dbHelper = DataBaseHelper(this)
+        dbHelper.updateTask(task)
 
         done.removeAt(doneIndex)
         notDone.add(newIndex, task)
@@ -175,10 +182,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addTask(task: Task) {
-        val newIndex = getIndexOfNewNotDoneTask(task)
 
-        notDone.add(newIndex, task)
-        taskAdapter.notifyItemInserted(newIndex + 1)
+
+        if (task.DoneAt != null) {
+            val doneIndex = getIndexOfNewDoneTask(task)
+            done.add(doneIndex, task)
+            taskAdapter.notifyItemInserted(doneIndex + notDone.size + 2)
+            return
+        }else {
+            val newIndex = getIndexOfNewNotDoneTask(task)
+            notDone.add(newIndex, task)
+            taskAdapter.notifyItemInserted(newIndex + 1)
+        }
+
 
         resetAddTask()
     }
