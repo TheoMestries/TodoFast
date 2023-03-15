@@ -3,38 +3,106 @@ package com.tm.todofast
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DataBaseHelper(val context: Context) {
 
-    override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL(CREATE_TABLE_QUERY)
+    private var nTask: TaskStructure? = null
+    private var bdd: SQLiteDatabase? = null
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val allTask: ArrayList<Task>
+        get() {
+            val retval = ArrayList<Task>()
+            openForRead()
+
+            val cursor = bdd!!.query(
+                TaskStructure.TABLE_TASK,
+                arrayOf(
+                    TaskStructure.COL_ID,
+                    TaskStructure.COL_DESCRIPTION,
+                    TaskStructure.COL_CREATEDAT,
+                    TaskStructure.COL_TODO,
+                    TaskStructure.COL_DONEAT
+                ),
+                null,
+                null,
+                null,
+                null, TaskStructure.COL_ID
+            )
+
+
+            if (cursor.count > 0) {
+                while (cursor.moveToNext()) {
+                    val selectedDate =
+                        if (cursor.getString(TaskStructure.NUM_COL_TODO) == "") null else formatter.parse(
+                            cursor.getString(TaskStructure.NUM_COL_TODO)
+                        )
+                    val doneAt =
+                        if (cursor.getString(TaskStructure.NUM_COL_DONEAT) == "") null else formatter.parse(
+                             cursor.getString(TaskStructure.NUM_COL_DONEAT)
+                        )
+
+                    retval.add(
+                        Task(
+                            cursor.getLong(TaskStructure.NUM_COL_ID),
+                            cursor.getString(TaskStructure.NUM_COL_DESCRIPTION),
+                            formatter.parse(cursor.getString(TaskStructure.NUM_COL_CREATEDAT))!!,
+                            selectedDate,
+                            doneAt,
+
+                        )
+                    )
+                }
+            }
+            close()
+            return retval
+        }
+
+    init {
+        nTask = TaskStructure(context, NOM_BDD, null, 1)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL(DELETE_TABLE_QUERY)
-        onCreate(db)
+    fun openForWrite() {
+        bdd = nTask!!.writableDatabase
+    }
+
+    fun openForRead() {
+        bdd = nTask!!.readableDatabase
+    }
+
+    fun close() {
+        bdd!!.close()
+    }
+
+    fun insertTask(text: String, selectedDate: Date?, DoneAt: Date?): Task {
+
+        openForWrite()
+
+        val values = ContentValues()
+        val formatDate = SimpleDateFormat("yyyy-MM-DD", Locale.FRANCE)
+        val createdAt = Calendar.getInstance().time
+
+        val selectedDateFormat = if (selectedDate == null) "" else formatDate.format(selectedDate)
+        val doneAtFormat = if (DoneAt == null) "" else formatDate.format(DoneAt)
+        values.put(TaskStructure.COL_DESCRIPTION, text)
+        values.put(TaskStructure.COL_CREATEDAT, formatDate.format(createdAt))
+        values.put(TaskStructure.COL_TODO, selectedDateFormat)
+        values.put(TaskStructure.COL_DONEAT, doneAtFormat)
+
+        val retval = bdd!!.insert(TaskStructure.TABLE_TASK, null, values)
+
+        close()
+
+        return Task(retval, text, createdAt, selectedDate, DoneAt)
     }
 
     companion object {
-        private const val DATABASE_NAME = "my_database"
-        private const val DATABASE_VERSION = 1
-        private const val CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS my_table(id INTEGER PRIMARY KEY, description TEXT, CreatedAt DATE, ToDo DATE  )"
-        private const val DELETE_TABLE_QUERY = "DROP TABLE IF EXISTS my_table"
+
+        private val NOM_BDD = "task.db"
     }
 
-    fun addItemDataBase(description: String, toDo: Date?): Task {
-        val db = writableDatabase
-        val createdAt = Calendar.getInstance().time
-        val contentValues = ContentValues().apply {
-            put("description", description)
-            put("CreatedAt", createdAt.time)
-            put("ToDo", toDo?.time)
-        }
-        val id = db.insert("my_table", null, contentValues)
-        db.close()
-        return Task(id , description, createdAt,toDo)
-    }
+
 }

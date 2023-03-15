@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
 
     var selectedDate: Date? = null
 
-    val dbHelper = DatabaseHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +43,11 @@ class MainActivity : AppCompatActivity() {
         recyclerView!!.layoutManager = LinearLayoutManager(this)
 
         val addText = findViewById<TextView>(R.id.textTaskName)
+        val dbHelper = DataBaseHelper(this)
+        val allTask = dbHelper.allTask
+        for (task in allTask) {
+          addTask(task)
+        }
 
         addText.addTextChangedListener {
             val taskName = addText.text.toString()
@@ -140,7 +144,12 @@ class MainActivity : AppCompatActivity() {
     fun onBtnAddClick(view: View) {
 
         val text = findViewById<TextView>(R.id.textTaskName).text.toString()
-        val task = dbHelper.addItemDataBase(text, selectedDate)
+        val dbHelper = DataBaseHelper(this)
+        val task = dbHelper.insertTask(text, selectedDate,null)
+        addTask(task)
+    }
+
+    private fun addTask(task: Task) {
         val newIndex = getIndexOfNewNotDoneTask(task)
 
         notDone.add(newIndex, task)
@@ -170,7 +179,7 @@ class MainActivity : AppCompatActivity() {
             val offsetFromUTC: Int = timeZoneUTC.getOffset(Date().time) * -1
 
             // Create a date format, then a date object with our offset
-            val simpleFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+            val simpleFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             selectedDate = Date(it + offsetFromUTC)
 
 
