@@ -21,27 +21,27 @@ class TaskStructure (context : Context, name: String, factory: SQLiteDatabase.Cu
 
     companion object {
 
-        val TABLE_TASK = "task"
-        val COL_ID = "id"
-        val NUM_COL_ID = 0
+        const val TABLE_TASK = "task"
+        const val COL_ID = "id"
+        const val NUM_COL_ID = 0
 
-        val COL_DESCRIPTION = "description"
-        val NUM_COL_DESCRIPTION = 1
+        const val COL_DESCRIPTION = "description"
+        const val NUM_COL_DESCRIPTION = 1
 
-        val COL_CREATEDAT = "createdAt"
-        val NUM_COL_CREATEDAT = 2
+        const val COL_CREATED_AT = "createdAt"
+        const val NUM_COL_CREATED_AT = 2
 
-        val COL_TODO = "toDo"
-        val NUM_COL_TODO = 3
+        const val COL_TODO = "toDo"
+        const val NUM_COL_TODO = 3
 
-        val COL_DONEAT = "doneAt"
-        val NUM_COL_DONEAT = 4
+        const val COL_DONE_AT = "doneAt"
+        const val NUM_COL_DONE_AT = 4
 
-        private val CREATE_BDD = "CREATE TABLE $TABLE_TASK (" +
+        private const val CREATE_BDD = "CREATE TABLE $TABLE_TASK (" +
                 "$COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "$COL_DESCRIPTION TEXT NOT NULL, " +
-                "$COL_CREATEDAT DATE NOT NULL, " +
+                "$COL_CREATED_AT DATE NOT NULL, " +
                 "$COL_TODO DATE NOT NULL, " +
-                "$COL_DONEAT DATE NOT NULL);"
+                "$COL_DONE_AT DATE NOT NULL);"
     }
 }
