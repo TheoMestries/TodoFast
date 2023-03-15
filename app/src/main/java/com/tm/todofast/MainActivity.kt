@@ -97,9 +97,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun removeTask(position: Int) {
+
         if (position > notDone.size + 1) {
+            val doneIndex = fromTotalListToDoneIndex(position)
+
+            val task = done[doneIndex]
+            val dbHelper = DataBaseHelper(this)
+            dbHelper.deleteTask(task.id)
             done.removeAt(fromTotalListToDoneIndex(position))
         } else {
+            val task = notDone[position - 1]
+            val dbHelper = DataBaseHelper(this)
+            dbHelper.deleteTask(task.id)
             notDone.removeAt(position - 1)
         }
 
