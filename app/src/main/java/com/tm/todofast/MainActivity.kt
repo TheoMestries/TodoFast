@@ -90,7 +90,6 @@ class MainActivity : AppCompatActivity() {
                     return
                 // Remove the item from your data set and notify the adapter
 
-                println(position)
                 if (position > notDone.size + 1) {
                     done.removeAt(fromTotalListToDoneIndex(position))
                 } else {
@@ -147,6 +146,24 @@ class MainActivity : AppCompatActivity() {
         return notDone.size
     }
 
+    /**
+     * Returns the index of the new done task. Compare the done date of the task with the done dates of the other tasks
+     * @param task the task to be added
+     * @return the index the task should be added to
+     */
+    private fun getIndexOfNewDoneTask(task: Task): Int {
+        if (task.DoneAt != null) //
+            for ((index, item) in done.withIndex()) {
+                if (item.DoneAt != null) {
+                    if (item.DoneAt!!.after(task.DoneAt!!)) {
+                        return index
+                    }
+                }
+
+            }
+        return done.size
+    }
+
     private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
 
     fun onBtnAddClick(view: View) {
@@ -162,7 +179,6 @@ class MainActivity : AppCompatActivity() {
 
         notDone.add(newIndex, task)
         taskAdapter.notifyItemInserted(newIndex + 1)
-
 
         resetAddTask()
     }
