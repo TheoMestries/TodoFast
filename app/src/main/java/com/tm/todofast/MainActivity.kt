@@ -76,13 +76,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
-                // Called when an item is swiped to the left or right
                 val position = viewHolder.adapterPosition
 
                 if (viewHolder is TaskAdapter.TitleViewHolder)
                     return
-                // Remove the item from your data set and notify the adapter
 
                 removeTask(position)
             }
@@ -91,13 +88,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun removeTask(position: Int) {
+        if(position == -1) //fix the crash of the button clicked twice (really fast)
+            return
 
         if (position > notDone.size + 1) {
             val doneIndex = fromTotalListToDoneIndex(position)
 
             val task = done[doneIndex]
             dbHelper.deleteTask(task.id)
-            done.removeAt(fromTotalListToDoneIndex(position))
+            done.removeAt(doneIndex)
         } else {
             val task = notDone[position - 1]
             dbHelper.deleteTask(task.id)
