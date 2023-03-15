@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class DataBaseHelper(val context: Context) {
@@ -82,7 +81,7 @@ class DataBaseHelper(val context: Context) {
         openForWrite()
 
         val values = ContentValues()
-        val formatDate = SimpleDateFormat("yyyy-MM-DD", Locale.FRANCE)
+        val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val createdAt = Calendar.getInstance().time
 
         val selectedDateFormat = if (selectedDate == null) "" else formatDate.format(selectedDate)

@@ -121,7 +121,7 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
 
             //set the date only if there is one
             if(item.selectedDate != null)
-                holder.dateTextView.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(item.selectedDate!!)
+                holder.dateTextView.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(item.selectedDate!!)
             else
                 holder.dateTextView.text = ""
 
