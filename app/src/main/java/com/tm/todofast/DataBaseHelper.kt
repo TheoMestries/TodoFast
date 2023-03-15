@@ -104,5 +104,11 @@ class DataBaseHelper(val context: Context) {
         private val NOM_BDD = "task.db"
     }
 
+    fun deleteTask(id : Long) {
+        openForWrite()
+        bdd!!.delete(TaskStructure.TABLE_TASK, TaskStructure.COL_ID + " = " + id, null)
+        close()
+    }
+
 
 }
