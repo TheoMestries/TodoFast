@@ -16,12 +16,14 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    var taskAdapter: TaskAdapter = TaskAdapter(arrayListOf(), arrayListOf())
+    private var taskAdapter: TaskAdapter = TaskAdapter(arrayListOf(), arrayListOf())
+    private val dbHelper = DataBaseHelper(this)
 
     private var recyclerView: RecyclerView? = null
 
-    var done = arrayListOf<Task>()
-    var notDone = arrayListOf<Task>()
+    private var done = arrayListOf<Task>()
+    private var notDone = arrayListOf<Task>()
+
 
     private var selectedDate: Date? = null
 
@@ -31,19 +33,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        done = arrayListOf(
-        )
-
-        notDone = arrayListOf(
-        )
-
         taskAdapter = TaskAdapter(done, notDone)
         recyclerView = findViewById(R.id.taskList)
         recyclerView!!.adapter = taskAdapter
         recyclerView!!.layoutManager = LinearLayoutManager(this)
 
         val addText = findViewById<TextView>(R.id.textTaskName)
-        val dbHelper = DataBaseHelper(this)
+
         val allTask = dbHelper.allTask
         for (task in allTask) {
           addTask(task)
@@ -53,7 +49,6 @@ class MainActivity : AppCompatActivity() {
             val taskName = addText.text.toString()
 
             findViewById<FloatingActionButton>(R.id.btnAddTask).isEnabled = taskName.isNotEmpty()
-
         }
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
@@ -61,10 +56,9 @@ class MainActivity : AppCompatActivity() {
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
             ): Int {
-                // set movement left and right forbidden
-
                 val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
                 if (viewHolder is TaskAdapter.TitleViewHolder)
+                    // set movement left and right forbidden
                     return makeMovementFlags(
                         ItemTouchHelper.ACTION_STATE_IDLE,
                         ItemTouchHelper.ACTION_STATE_IDLE
@@ -102,12 +96,10 @@ class MainActivity : AppCompatActivity() {
             val doneIndex = fromTotalListToDoneIndex(position)
 
             val task = done[doneIndex]
-            val dbHelper = DataBaseHelper(this)
             dbHelper.deleteTask(task.id)
             done.removeAt(fromTotalListToDoneIndex(position))
         } else {
             val task = notDone[position - 1]
-            val dbHelper = DataBaseHelper(this)
             dbHelper.deleteTask(task.id)
             notDone.removeAt(position - 1)
         }
@@ -125,7 +117,6 @@ class MainActivity : AppCompatActivity() {
         notDone.removeAt(index - 1)
         done.add(0, task)
         task.DoneAt= Calendar.getInstance().time
-        val dbHelper = DataBaseHelper(this)
         dbHelper.updateTask(task)
 
 
@@ -138,7 +129,6 @@ class MainActivity : AppCompatActivity() {
         val task = done[doneIndex]
         val newIndex = getIndexOfNewNotDoneTask(task)
         task.DoneAt = null
-        val dbHelper = DataBaseHelper(this)
         dbHelper.updateTask(task)
 
         done.removeAt(doneIndex)
@@ -186,10 +176,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
 
+
+
     fun onBtnAddClick(view: View) {
 
         val text = findViewById<TextView>(R.id.textTaskName).text.toString()
-        val dbHelper = DataBaseHelper(this)
         val task = dbHelper.insertTask(text, selectedDate,null)
         addTask(task)
     }

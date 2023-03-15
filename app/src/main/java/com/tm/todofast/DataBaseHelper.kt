@@ -14,7 +14,7 @@ class DataBaseHelper(context: Context) {
     private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val allTask: ArrayList<Task>
         get() {
-            val retval = ArrayList<Task>()
+            val tasks = ArrayList<Task>()
             openForRead()
 
             val cursor = bdd!!.query(
@@ -44,7 +44,7 @@ class DataBaseHelper(context: Context) {
                              cursor.getString(TaskStructure.NUM_COL_DONE_AT)
                         )
 
-                    retval.add(
+                    tasks.add(
                         Task(
                             cursor.getLong(TaskStructure.NUM_COL_ID),
                             cursor.getString(TaskStructure.NUM_COL_DESCRIPTION),
@@ -59,7 +59,7 @@ class DataBaseHelper(context: Context) {
             cursor.close()
             close()
 
-            return retval
+            return tasks
         }
 
     init {
@@ -115,8 +115,8 @@ class DataBaseHelper(context: Context) {
         openForWrite()
         val values = ContentValues()
         val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val selectedDateFormat = if (task.selectedDate == null) "" else formatDate.format(task.selectedDate)
-        val doneAtFormat = if (task.DoneAt == null) "" else formatDate.format(task.DoneAt)
+        val selectedDateFormat = if (task.selectedDate == null) "" else formatDate.format(task.selectedDate!!)
+        val doneAtFormat = if (task.DoneAt == null) "" else formatDate.format(task.DoneAt!!)
         values.put(TaskStructure.COL_DESCRIPTION, task.title)
         values.put(TaskStructure.COL_CREATED_AT, formatDate.format(task.createdAt))
         values.put(TaskStructure.COL_TODO, selectedDateFormat)
