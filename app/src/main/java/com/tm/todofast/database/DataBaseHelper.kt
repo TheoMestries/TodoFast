@@ -1,8 +1,9 @@
-package com.tm.todofast
+package com.tm.todofast.database
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import com.tm.todofast.Task
 import java.text.SimpleDateFormat
 import java.util.*
 

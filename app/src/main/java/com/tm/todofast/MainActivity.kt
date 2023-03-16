@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.tm.todofast.database.DataBaseHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -118,7 +119,6 @@ class MainActivity : AppCompatActivity() {
         task.DoneAt= Calendar.getInstance().time
         dbHelper.updateTask(task)
 
-
         taskAdapter.notifyItemMoved(index, notDone.size + 2)
     }
 
@@ -176,17 +176,13 @@ class MainActivity : AppCompatActivity() {
     private fun fromTotalListToDoneIndex(position: Int) = position - notDone.size - 2
 
 
-
     fun onBtnAddClick(view: View) {
-
         val text = findViewById<TextView>(R.id.textTaskName).text.toString()
         val task = dbHelper.insertTask(text, selectedDate,null)
         addTask(task)
     }
 
     private fun addTask(task: Task) {
-
-
         if (task.DoneAt != null) {
             val doneIndex = getIndexOfNewDoneTask(task)
             done.add(doneIndex, task)
@@ -197,7 +193,6 @@ class MainActivity : AppCompatActivity() {
             notDone.add(newIndex, task)
             taskAdapter.notifyItemInserted(newIndex + 1)
         }
-
 
         resetAddTask()
     }
@@ -230,7 +225,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         picker.show(supportFragmentManager, picker.toString())
-
     }
 
 }
