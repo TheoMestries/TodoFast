@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayList<Task>) :
+class TaskAdapter(private val taskManager: TaskListManager) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val viewTypeTitle = 0
@@ -84,10 +84,10 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
 
     override fun getItemViewType(position: Int): Int {
         // what type of view
-        return if (position == 0 || position == notDone.size + 1)
+        return if (taskManager.isTitle(position))
             viewTypeTitle
         else
-            if (position < notDone.size + 1) viewTypeNotDoneTask else viewTypeDoneTask
+            if (taskManager.isDone(position)) viewTypeDoneTask else viewTypeNotDoneTask
     }
 
 
@@ -104,17 +104,16 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is TitleViewHolder) {
-            holder.titleTextView.text = if (position == 0) "Not Done" else "Done"
+            holder.titleTextView.text = taskManager.getTitle(position)
         } else if (holder is TaskViewHolder) {
-            val item: Task =
-                if (position < notDone.size + 1)
-                    notDone[position - 1] else done[position - notDone.size - 2]
+            val item: Task = taskManager.getTask(position)
 
             holder.titleTextView.text = item.title
 
             //set the date only if there is one
-            if(item.selectedDate != null)
-                holder.dateTextView.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(item.selectedDate!!)
+            if (item.selectedDate != null)
+                holder.dateTextView.text =
+                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(item.selectedDate!!)
             else
                 holder.dateTextView.text = ""
 
@@ -125,7 +124,7 @@ class TaskAdapter(private val done: ArrayList<Task>, private val notDone: ArrayL
 
 
     override fun getItemCount(): Int {
-        return done.size + notDone.size + 2
+        return taskManager.getRecyclerListSize()
     }
 
 }
