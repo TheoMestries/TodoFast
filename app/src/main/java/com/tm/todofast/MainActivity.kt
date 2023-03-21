@@ -1,13 +1,18 @@
 package com.tm.todofast
 
+import android.graphics.drawable.Animatable2
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tm.todofast.database.DataBaseHelper
@@ -17,14 +22,20 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+
+
     private var taskAdapter: TaskAdapter? = null
     private val dbHelper = DataBaseHelper(this)
 
     private var recyclerView: RecyclerView? = null
 
     private var taskManager = TaskListManager()
+    private var done: ImageView? = null
+    private var circle: ImageView? = null
 
-
+    private var avd : AnimatedVectorDrawableCompat? = null
+    private var avd2 : AnimatedVectorDrawable? = null
+    private var drawable : Drawable? = null
     private var selectedDate: Date? = null
 
 
@@ -32,7 +43,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
+        done = findViewById(R.id.done)
+        circle = findViewById(R.id.circle)
+        circle?.visibility = View.INVISIBLE
+        done?.visibility = View.INVISIBLE
         taskAdapter = TaskAdapter(taskManager)
 
         recyclerView = findViewById(R.id.taskList)
@@ -40,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView!!.layoutManager = LinearLayoutManager(this)
 
         val addText = findViewById<TextView>(R.id.textTaskName)
-
+        dbHelper.deleteTask(4)
         val allTask = dbHelper.allTask
         for (task in allTask) {
             addTask(task)
@@ -103,7 +117,10 @@ class MainActivity : AppCompatActivity() {
      * Setting a task to done and moving it to the top of the done list
      * @param position the index of the task in the total list (not done + done + titles)
      **/
+
     fun setItemDone(position: Int) {
+        playAnimation()
+
         val task = taskManager.getTask(position)
         task.DoneAt = Calendar.getInstance().time
 
@@ -111,6 +128,23 @@ class MainActivity : AppCompatActivity() {
         dbHelper.updateTask(task)
 
         taskAdapter!!.notifyItemMoved(position, newIndex)
+    }
+
+    private fun playAnimation() {
+        circle?.visibility = View.VISIBLE
+        done?.visibility = View.VISIBLE
+        val drawable = done?.getDrawable()
+
+        if (drawable is Animatable2) {
+            drawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+                override fun onAnimationStart(drawable: Drawable?) {
+                }
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    done?.visibility = View.GONE
+                    circle?.visibility = View.GONE                }
+            })
+            drawable.start()
+        }
     }
 
     fun setItemUnDone(position: Int) {

@@ -40,8 +40,8 @@ class TaskStructure (context : Context, name: String, factory: SQLiteDatabase.Cu
         private const val CREATE_BDD = "CREATE TABLE $TABLE_TASK (" +
                 "$COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "$COL_DESCRIPTION TEXT NOT NULL, " +
-                "$COL_CREATED_AT DATE NOT NULL, " +
+                "$COL_CREATED_AT DATETIME NOT NULL, " +
                 "$COL_TODO DATE NOT NULL, " +
-                "$COL_DONE_AT DATE NOT NULL);"
+                "$COL_DONE_AT DATETIME NOT NULL);"
     }
 }

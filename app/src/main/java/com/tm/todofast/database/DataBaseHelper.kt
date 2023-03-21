@@ -12,7 +12,7 @@ class DataBaseHelper(context: Context) {
 
     private var nTask: TaskStructure? = null
     private var bdd: SQLiteDatabase? = null
-    private val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
     val allTask: ArrayList<Task>
         get() {
             val tasks = ArrayList<Task>()
@@ -84,7 +84,7 @@ class DataBaseHelper(context: Context) {
         openForWrite()
 
         val values = ContentValues()
-        val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val formatDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         val createdAt = Calendar.getInstance().time
 
         val selectedDateFormat = if (selectedDate == null) "" else formatDate.format(selectedDate)
@@ -115,7 +115,7 @@ class DataBaseHelper(context: Context) {
     fun updateTask(task: Task) {
         openForWrite()
         val values = ContentValues()
-        val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val formatDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         val selectedDateFormat = if (task.selectedDate == null) "" else formatDate.format(task.selectedDate!!)
         val doneAtFormat = if (task.DoneAt == null) "" else formatDate.format(task.DoneAt!!)
         values.put(TaskStructure.COL_DESCRIPTION, task.title)

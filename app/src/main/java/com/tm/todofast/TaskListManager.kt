@@ -139,13 +139,13 @@ class TaskListManager {
     fun getTitle(position: Int): String {
         return when (position) {
             0 -> {
-                "Overdue"
+                "Faster !!!"
             }
             lateNotDone.size + 1 -> {
-                "Not done"
+                "To do Fast"
             }
             lateNotDone.size + notDone.size + 2 -> {
-                "Done"
+                "Done Fast"
             }
             else -> {
                 throw Exception("Too much titles")
