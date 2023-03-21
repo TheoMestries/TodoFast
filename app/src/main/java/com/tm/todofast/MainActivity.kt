@@ -133,18 +133,29 @@ class MainActivity : AppCompatActivity() {
     private fun playAnimation() {
         circle?.visibility = View.VISIBLE
         done?.visibility = View.VISIBLE
-        val drawable = done?.getDrawable()
+        val circleDrawable = circle?.getDrawable()
 
-        if (drawable is Animatable2) {
-            drawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+        if (circleDrawable is Animatable2) {
+circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable?) {
                 }
                 override fun onAnimationEnd(drawable: Drawable?) {
-                    done?.visibility = View.GONE
-                    circle?.visibility = View.GONE                }
+                    val drawable = done?.getDrawable()
+                    if (drawable is Animatable2) {
+                        drawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+                            override fun onAnimationStart(drawable: Drawable?) {
+                            }
+                            override fun onAnimationEnd(drawable: Drawable?) {
+                                done?.visibility = View.GONE
+                                circle?.visibility = View.GONE                }
+                        })
+                        drawable.start()
+                    }
+                }
             })
-            drawable.start()
+            circleDrawable.start()
         }
+
     }
 
     fun setItemUnDone(position: Int) {
