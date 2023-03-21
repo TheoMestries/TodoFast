@@ -3,7 +3,6 @@ package com.tm.todofast
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.drawable.Animatable2
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -14,7 +13,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tm.todofast.database.DataBaseHelper
 import java.text.SimpleDateFormat
@@ -131,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         val circleDrawable = circle?.drawable
 
         if (circleDrawable is Animatable2) {
-circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable?) {
                     done?.visibility = View.VISIBLE
                     val donedrawable = done?.drawable
@@ -149,11 +147,12 @@ circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback(
                         donedrawable.start()
                     }
                 }
+
                 override fun onAnimationEnd(drawable: Drawable?) {
 
 
-                                circle?.visibility = View.GONE                }
-
+                    circle?.visibility = View.GONE
+                }
 
 
             })
