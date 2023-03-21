@@ -1,7 +1,7 @@
 package com.tm.todofast
 
 import android.graphics.drawable.Animatable2
-import android.graphics.drawable.AnimatedVectorDrawable
+
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -12,7 +12,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tm.todofast.database.DataBaseHelper
@@ -32,10 +31,6 @@ class MainActivity : AppCompatActivity() {
     private var taskManager = TaskListManager()
     private var done: ImageView? = null
     private var circle: ImageView? = null
-
-    private var avd : AnimatedVectorDrawableCompat? = null
-    private var avd2 : AnimatedVectorDrawable? = null
-    private var drawable : Drawable? = null
     private var selectedDate: Date? = null
 
 
@@ -132,26 +127,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun playAnimation() {
         circle?.visibility = View.VISIBLE
-        val circleDrawable = circle?.getDrawable()
+        val circleDrawable = circle?.drawable
 
         if (circleDrawable is Animatable2) {
 circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable?) {
-                }
-                override fun onAnimationEnd(drawable: Drawable?) {
                     done?.visibility = View.VISIBLE
-                    val drawable = done?.getDrawable()
-                    if (drawable is Animatable2) {
-                        drawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
-                            override fun onAnimationStart(drawable: Drawable?) {
+                    val donedrawable = done?.drawable
+                    if (donedrawable is Animatable2) {
+                        donedrawable.registerAnimationCallback(object :
+                            Animatable2.AnimationCallback() {
+                            override fun onAnimationStart(donedrawable: Drawable?) {
                             }
-                            override fun onAnimationEnd(drawable: Drawable?) {
+
+                            override fun onAnimationEnd(donedrawable: Drawable?) {
                                 done?.visibility = View.GONE
-                                circle?.visibility = View.GONE                }
+
+                            }
                         })
-                        drawable.start()
+                        donedrawable.start()
                     }
                 }
+                override fun onAnimationEnd(drawable: Drawable?) {
+
+
+                                circle?.visibility = View.GONE                }
+
+
+
             })
             circleDrawable.start()
         }

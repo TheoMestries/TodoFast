@@ -1,7 +1,6 @@
-<animated-vector xmlns:tools="http://schemas.android.com/tools"
+<animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    tools:ignore="MissingDefaultResource">
+    xmlns:aapt="http://schemas.android.com/aapt">
     <aapt:attr name="android:drawable">
         <vector
             android:name="vector"
@@ -18,13 +17,23 @@
     </aapt:attr>
     <target android:name="path">
         <aapt:attr name="android:animation">
-            <objectAnimator
-                android:propertyName="fillAlpha"
-                android:duration="1000"
-                android:valueFrom="0"
-                android:valueTo="1"
-                android:valueType="floatType"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            <set>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:duration="1000"
+                    android:valueFrom="0"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="1500"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
         </aapt:attr>
     </target>
 </animated-vector>
