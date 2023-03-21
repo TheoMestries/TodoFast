@@ -132,7 +132,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun playAnimation() {
         circle?.visibility = View.VISIBLE
-        done?.visibility = View.VISIBLE
         val circleDrawable = circle?.getDrawable()
 
         if (circleDrawable is Animatable2) {
@@ -140,6 +139,7 @@ circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback(
                 override fun onAnimationStart(drawable: Drawable?) {
                 }
                 override fun onAnimationEnd(drawable: Drawable?) {
+                    done?.visibility = View.VISIBLE
                     val drawable = done?.getDrawable()
                     if (drawable is Animatable2) {
                         drawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
