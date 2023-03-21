@@ -23,7 +23,6 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
 
-
     private var taskAdapter: TaskAdapter? = null
     private val dbHelper = DataBaseHelper(this)
 
@@ -33,9 +32,9 @@ class MainActivity : AppCompatActivity() {
     private var done: ImageView? = null
     private var circle: ImageView? = null
 
-    private var avd : AnimatedVectorDrawableCompat? = null
-    private var avd2 : AnimatedVectorDrawable? = null
-    private var drawable : Drawable? = null
+    private var avd: AnimatedVectorDrawableCompat? = null
+    private var avd2: AnimatedVectorDrawable? = null
+    private var drawable: Drawable? = null
     private var selectedDate: Date? = null
 
 
@@ -135,19 +134,23 @@ class MainActivity : AppCompatActivity() {
         val circleDrawable = circle?.getDrawable()
 
         if (circleDrawable is Animatable2) {
-circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable?) {
                 }
+
                 override fun onAnimationEnd(drawable: Drawable?) {
                     done?.visibility = View.VISIBLE
                     val drawable = done?.getDrawable()
                     if (drawable is Animatable2) {
-                        drawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+                        drawable.registerAnimationCallback(object :
+                            Animatable2.AnimationCallback() {
                             override fun onAnimationStart(drawable: Drawable?) {
                             }
+
                             override fun onAnimationEnd(drawable: Drawable?) {
                                 done?.visibility = View.GONE
-                                circle?.visibility = View.GONE                }
+                                circle?.visibility = View.GONE
+                            }
                         })
                         drawable.start()
                     }
@@ -168,12 +171,21 @@ circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback(
         taskAdapter!!.notifyItemMoved(position, newIndex)
     }
 
+    /**
+     * Called when the user clicks on the button to add a task
+     * Add the task to the list and to the database
+     */
     fun onBtnAddClick(view: View) {
         val text = findViewById<TextView>(R.id.textTaskName).text.toString()
         val task = dbHelper.insertTask(text, selectedDate, null)
         addTask(task)
     }
 
+    /**
+     * Add a task to the list
+     * !!! the task will not be added to the database using this method
+     * @param task the task to add
+     */
     private fun addTask(task: Task) {
         val recyclerIndex = taskManager.addTask(task)
 
