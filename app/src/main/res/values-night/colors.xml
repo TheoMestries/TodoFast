@@ -2,4 +2,7 @@
 <resources>
     <color name="item_background">#2D2D2E</color>
     <color name="background">@android:color/background_dark</color>
+    <color name="text_color">#FFFFFF</color>
+    <color name="circle_color">#FFFFFF</color>
+    <color name="done_color">#000000</color>
 </resources>

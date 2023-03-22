@@ -7,6 +7,7 @@
     android:layout_gravity="left|center_vertical"
     android:layout_marginLeft="20dp"
     android:layout_marginTop="10dp"
+    android:textColor="@color/text_color"
     android:layout_weight="1"
     android:gravity="center"
     android:text=""
