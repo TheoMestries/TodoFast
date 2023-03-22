@@ -1,7 +1,8 @@
 package com.tm.todofast
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.graphics.drawable.Animatable2
-
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -12,7 +13,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tm.todofast.database.DataBaseHelper
 import java.text.SimpleDateFormat
@@ -20,7 +20,6 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-
 
 
     private var taskAdapter: TaskAdapter? = null
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         val circleDrawable = circle?.drawable
 
         if (circleDrawable is Animatable2) {
-circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+            circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
                 override fun onAnimationStart(drawable: Drawable?) {
                     done?.visibility = View.VISIBLE
                     val donedrawable = done?.drawable
@@ -148,11 +147,12 @@ circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback(
                         donedrawable.start()
                     }
                 }
+
                 override fun onAnimationEnd(drawable: Drawable?) {
 
 
-                                circle?.visibility = View.GONE                }
-
+                    circle?.visibility = View.GONE
+                }
 
 
             })
@@ -171,12 +171,21 @@ circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback(
         taskAdapter!!.notifyItemMoved(position, newIndex)
     }
 
+    /**
+     * Called when the user clicks on the button to add a task
+     * Add the task to the list and to the database
+     */
     fun onBtnAddClick(view: View) {
         val text = findViewById<TextView>(R.id.textTaskName).text.toString()
         val task = dbHelper.insertTask(text, selectedDate, null)
         addTask(task)
     }
 
+    /**
+     * Add a task to the list
+     * !!! the task will not be added to the database using this method
+     * @param task the task to add
+     */
     private fun addTask(task: Task) {
         val recyclerIndex = taskManager.addTask(task)
 
@@ -192,27 +201,38 @@ circleDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback(
     }
 
     fun onBtnChooseDateClick(view: View) {
-        val builder = MaterialDatePicker.Builder.datePicker().setTitleText("Select deadline")
-        val picker = builder.build()
+        val actualDate = Calendar.getInstance()
 
-        picker.addOnPositiveButtonClickListener {
-            //save date
-            picker.selection
+        val datePicker = DatePickerDialog(
+            this,
+            { _, year, month, dayOfMonth ->
 
-            val timeZoneUTC: TimeZone = TimeZone.getDefault()
+                val timePicker = TimePickerDialog(this, { _, hour, minute ->
 
-            // It will be negative, so that's the -1
-            val offsetFromUTC: Int = timeZoneUTC.getOffset(Date().time) * -1
+                    val cal = Calendar.getInstance()
+                    cal[Calendar.YEAR] = year
+                    cal[Calendar.MONTH] = month
+                    cal[Calendar.DAY_OF_MONTH] = dayOfMonth
+                    cal[Calendar.HOUR_OF_DAY] = hour
+                    cal[Calendar.MINUTE] = minute
 
-            // Create a date format, then a date object with our offset
-            val simpleFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            selectedDate = Date(it + offsetFromUTC)
+                    selectedDate = cal.time
 
+                    // Create a date format, then a date object with our offset
+                    val simpleFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                    (view as TextView).text = simpleFormat.format(selectedDate!!)
 
-            (view as TextView).text = simpleFormat.format(selectedDate!!)
-        }
+                }, actualDate.get(Calendar.HOUR_OF_DAY), actualDate.get(Calendar.MINUTE), true)
 
-        picker.show(supportFragmentManager, picker.toString())
+                timePicker.show()
+
+            },
+            actualDate.get(Calendar.YEAR),
+            actualDate.get(Calendar.MONTH),
+            actualDate.get(Calendar.DAY_OF_MONTH)
+        )
+
+        datePicker.show()
     }
 
 }
