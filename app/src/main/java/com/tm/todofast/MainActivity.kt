@@ -1,7 +1,11 @@
 package com.tm.todofast
 
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Animatable2
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -36,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Notifications.askForNotificationPermission(this)
 
         done = findViewById(R.id.done)
         circle = findViewById(R.id.circle)
@@ -178,6 +184,21 @@ class MainActivity : AppCompatActivity() {
     fun onBtnAddClick(view: View) {
         val text = findViewById<TextView>(R.id.textTaskName).text.toString()
         val task = dbHelper.insertTask(text, selectedDate, null)
+
+        // create notification
+        if (task.selectedDate != null) {
+            val intent = Intent(this, AlarmReceiver::class.java)
+                .putExtra("taskId", task.id)
+                .putExtra("taskTitle", task.title)
+
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, task.selectedDate!!.time, pendingIntent)
+
+        }
+
         addTask(task)
     }
 
