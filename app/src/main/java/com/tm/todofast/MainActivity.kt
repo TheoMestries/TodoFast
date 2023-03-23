@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
 
         val task = taskManager.removeTask(position)
         dbHelper.deleteTask(task.id)
+        removeNotificationAlarm(task)
 
         taskAdapter!!.notifyItemRemoved(position)
     }
@@ -126,6 +127,7 @@ class MainActivity : AppCompatActivity() {
 
         val newIndex = taskManager.updateTask(task)
         dbHelper.updateTask(task)
+        removeNotificationAlarm(task)//remove the notification because the task is done
 
         taskAdapter!!.notifyItemMoved(position, newIndex)
     }
@@ -173,6 +175,9 @@ class MainActivity : AppCompatActivity() {
 
         val newIndex = taskManager.updateTask(task)
         dbHelper.updateTask(task)
+
+        //add the notification again because it have been removed when the task was set done
+        addNotificationAlarm(task)
 
         taskAdapter!!.notifyItemMoved(position, newIndex)
     }
