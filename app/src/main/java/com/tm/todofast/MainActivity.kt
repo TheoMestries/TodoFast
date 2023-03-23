@@ -185,21 +185,36 @@ class MainActivity : AppCompatActivity() {
         val text = findViewById<TextView>(R.id.textTaskName).text.toString()
         val task = dbHelper.insertTask(text, selectedDate, null)
 
-        // create notification
+        addNotificationAlarm(task)
+
+        addTask(task)
+    }
+
+    private fun addNotificationAlarm(task: Task) {
         if (task.selectedDate != null) {
             val intent = Intent(this, AlarmReceiver::class.java)
                 .putExtra("taskId", task.id)
                 .putExtra("taskTitle", task.title)
 
             val pendingIntent =
-                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+                PendingIntent.getBroadcast(this, task.id.toInt(), intent, PendingIntent.FLAG_IMMUTABLE)
 
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, task.selectedDate!!.time, pendingIntent)
-
         }
+    }
 
-        addTask(task)
+    private fun removeNotificationAlarm(task: Task) {
+        //setting the same pending intent as the one used to set the alarm
+        val intent = Intent(this, AlarmReceiver::class.java)
+            .putExtra("taskId", task.id)
+            .putExtra("taskTitle", task.title)
+
+        val pendingIntent =
+            PendingIntent.getBroadcast(this, task.id.toInt(), intent, PendingIntent.FLAG_IMMUTABLE)
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pendingIntent)
     }
 
     /**
