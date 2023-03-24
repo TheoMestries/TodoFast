@@ -4,10 +4,15 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class TaskStructure (context : Context, name: String, factory: SQLiteDatabase.CursorFactory?, version: Int) :
+class TaskStructure(
+    context: Context,
+    name: String,
+    factory: SQLiteDatabase.CursorFactory?,
+    version: Int
+) :
     SQLiteOpenHelper(context, name, factory, version) {
 
-    private var db : SQLiteDatabase? = null
+    private var db: SQLiteDatabase? = null
 
     override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
         db = sqLiteDatabase

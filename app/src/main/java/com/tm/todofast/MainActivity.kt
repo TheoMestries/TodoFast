@@ -188,7 +188,8 @@ class MainActivity : AppCompatActivity() {
      */
     fun onBtnAddClick(view: View) {
         val text = findViewById<TextView>(R.id.textTaskName).text.toString()
-        val task = dbHelper.insertTask(text, selectedDate, null)
+        val task = dbHelper.insertTask(text, selectedDate, null
+        )
 
         addNotificationAlarm(task)
 

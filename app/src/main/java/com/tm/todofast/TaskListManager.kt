@@ -82,17 +82,7 @@ class TaskListManager {
     }
 
 
-    private fun indexByTask(task: Task): Int {
-        if (task.DoneAt != null) {
-            return done.indexOf(task) + lateNotDone.size + notDone.size + 3
-        }
-        if (task.selectedDate != null && task.selectedDate!!.after(Calendar.getInstance().time)) {
-            return notDone.indexOf(task) + lateNotDone.size + 2
-        }
-        return lateNotDone.indexOf(task) + 1
-    }
-
-    fun indexById(id: Long): Int {
+    private fun indexById(id: Long): Int {
         for ((index, task) in lateNotDone.withIndex()) {
             if (task.id == id) {
                 return index + 1
